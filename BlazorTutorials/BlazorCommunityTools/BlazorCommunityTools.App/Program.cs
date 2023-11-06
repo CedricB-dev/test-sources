@@ -1,10 +1,13 @@
 using BlazorCommunityTools.App.Components;
+using BlazorCommunityTools.App.Components.Pages;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddTransient<CounterViewModel>();
 
 var app = builder.Build();
 
