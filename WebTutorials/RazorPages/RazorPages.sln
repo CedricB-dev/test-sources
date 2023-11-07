@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPages.Web", "RazorPages.Web\RazorPages.Web.csproj", "{EEA76F3C-31AB-4565-BB32-915A4B3F75EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EEA76F3C-31AB-4565-BB32-915A4B3F75EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEA76F3C-31AB-4565-BB32-915A4B3F75EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEA76F3C-31AB-4565-BB32-915A4B3F75EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEA76F3C-31AB-4565-BB32-915A4B3F75EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
