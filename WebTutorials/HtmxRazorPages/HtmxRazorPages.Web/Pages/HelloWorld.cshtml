@@ -1,0 +1,14 @@
+﻿@page
+@model HelloWorld
+@{
+    ViewData["Title"] = "Hello World";
+}
+
+<div class="card m-5 p-5 ms-0 text-center">
+    <h1 class="fs-1 mb-4" id="target">Welcome</h1>
+    <button class="btn btn-primary btn-lg px-4"
+            hx-get=""
+            hx-target="#target">
+        Click Me
+    </button>
+</div>

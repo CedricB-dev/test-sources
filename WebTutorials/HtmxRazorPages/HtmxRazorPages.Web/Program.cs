@@ -1,3 +1,6 @@
+using Htmx.TagHelpers;
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +23,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapHtmxAntiforgeryScript();
 app.MapRazorPages();
 
 app.Run();
