@@ -18,4 +18,16 @@ public class UnitTest1
         var currentCount = component.Find("[role='status']");
         currentCount.TextContent.Should().Be("Current count: 1");
     }
+    
+    [Fact]
+    public void ShouldAbc()
+    {
+        using var testContext = new TestContext();
+
+        var component = testContext.RenderComponent<Weather>();
+        component.WaitForElement(".table", TimeSpan.FromSeconds(4));
+
+        var elements = component.FindAll("tbody > tr");
+        elements.Count().Should().Be(5);
+    }
 }
