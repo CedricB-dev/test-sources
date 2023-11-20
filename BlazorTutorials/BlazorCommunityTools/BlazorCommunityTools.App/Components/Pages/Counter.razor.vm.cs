@@ -1,14 +1,14 @@
-﻿using BlazorCommunityTools.App.Components.Shared;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace BlazorCommunityTools.App.Components.Pages;
-
-public partial class CounterViewModel : ViewModelBase
+namespace BlazorCommunityTools.App.Components.Pages
 {
-    [ObservableProperty]
-    private int _currentCount = 0;
+    public partial class CounterViewModel : ViewModelBase
+    {
+        [ObservableProperty]
+        private int _currentCount = 0;
 
-    [RelayCommand]
-    private void IncrementCount() => CurrentCount++;
+        [RelayCommand]
+        private void IncrementCount() => CurrentCount++;
+    }
 }
