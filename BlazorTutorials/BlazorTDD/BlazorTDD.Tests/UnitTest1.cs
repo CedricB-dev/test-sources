@@ -23,7 +23,7 @@ public class UnitTest1
     public void ShouldAbc()
     {
         using var testContext = new TestContext();
-
+        
         var component = testContext.RenderComponent<Weather>();
         component.WaitForElement(".table", TimeSpan.FromSeconds(4));
 
