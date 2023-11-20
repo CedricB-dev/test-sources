@@ -1,0 +1,4 @@
+﻿@inject IState<BlazorFluxor.App.Pages.CounterState> CounterState
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<p>Current from other component Count : @CounterState.Value.CurrentCount</p>
