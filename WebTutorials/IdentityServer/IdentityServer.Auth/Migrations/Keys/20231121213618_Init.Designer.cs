@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityServer.Auth.Migrations.Keys
 {
     [DbContext(typeof(KeysContext))]
-    [Migration("20231120221110_Init")]
+    [Migration("20231121213618_Init")]
     partial class Init
     {
         /// <inheritdoc />

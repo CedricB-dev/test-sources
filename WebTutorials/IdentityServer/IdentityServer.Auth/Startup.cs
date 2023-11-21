@@ -46,7 +46,7 @@ namespace IdentityServer.Auth
             });
 
             
-            services.AddIdentity<ApplicationUser, IdentityRole>(option =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(option =>
                 {
                     option.SignIn.RequireConfirmedEmail = false;
                     option.SignIn.RequireConfirmedPhoneNumber = false;

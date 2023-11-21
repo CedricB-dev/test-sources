@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityServer.Auth.Migrations.Configuration
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20231120221738_Init")]
+    [Migration("20231121213652_Init")]
     partial class Init
     {
         /// <inheritdoc />
