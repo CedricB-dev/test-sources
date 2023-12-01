@@ -1,9 +1,12 @@
 using BlazorInReact.Web.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents(opt => {
+        opt.RootComponents.RegisterCustomElement<BlazorTimer>("blazor-timer");
+});
 
 var app = builder.Build();
 

@@ -1,0 +1,44 @@
+@implements IDisposable
+
+<button @onclick="StartTimer">
+    @ButtonText
+</button>
+@if (_showTime)
+{
+    <span class="mx-4">@_time</span>
+}
+
+@code {
+
+    private string _time = "00:00:00";
+    private Timer? _timer;
+    private bool _showTime = false;
+    private string _textButton = "Show";
+
+    public string ButtonText => _showTime ? $"Hide [{Host}]" : $"Show [{Host}]";
+
+    [Parameter] public string Host { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _timer = new Timer(Tick, null, 0, 1000);
+    }
+
+    private void Tick(object? state)
+    {
+        _time = DateTime.Now.ToString("HH:mm:ss:fff");
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void StartTimer()
+    {
+        _showTime = !_showTime;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+}
