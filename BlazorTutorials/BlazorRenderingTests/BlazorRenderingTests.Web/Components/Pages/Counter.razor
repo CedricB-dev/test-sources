@@ -1,0 +1,70 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+@inject ILogger<Counter> Logger
+@implements IDisposable
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @_currentCount</p>
+
+<CounterButton class="btn btn-primary" OnClick="@IncrementCount">Click me</CounterButton>
+
+@code {
+    private int _currentCount;
+    private Random _random = new();
+    private PersistingComponentStateSubscription persistingSubscription;
+
+    [Inject]
+    public PersistentComponentState ComponentState { get; set; }
+    
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Logger.LogDebug("{Component} | {Method} ",
+            nameof(Counter), nameof(SetParametersAsync));
+        return base.SetParametersAsync(parameters);
+    }
+
+    protected override void OnParametersSet()
+    {
+        Logger.LogDebug("{Component} | {Method} ",
+            nameof(Counter), nameof(OnParametersSet));
+        
+    }
+
+    protected override void OnInitialized()
+    {
+        persistingSubscription = ComponentState.RegisterOnPersisting(PersistData);
+
+        _currentCount = ComponentState.TryTakeFromJson<int>(nameof(_currentCount), out var currentCount) 
+            ? currentCount 
+            : _random.Next(100);
+        
+        Logger.LogDebug("{Component} | {Method} | {CurrentCount}",
+            nameof(Counter), nameof(OnInitialized), _currentCount);
+    }
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Logger.LogDebug("{Component} | {Method} | IsFirstRender : {FirstRender} ",
+            nameof(Counter), nameof(OnAfterRender), firstRender);
+    }
+    
+    private Task PersistData()
+    {
+        ComponentState.PersistAsJson(nameof(_currentCount), _currentCount);
+        return Task.CompletedTask;
+    }
+    
+    private void IncrementCount()
+    {
+        _currentCount++;
+    }
+    
+    public void Dispose()
+    {
+        persistingSubscription.Dispose();
+    }
+
+}
