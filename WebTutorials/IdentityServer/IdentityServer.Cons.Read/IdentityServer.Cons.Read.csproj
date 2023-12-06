@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IdentityServer.Auth\IdentityServer.Auth.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="IdentityModel" Version="6.2.0" />
     </ItemGroup>
 

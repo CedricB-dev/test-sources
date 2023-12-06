@@ -6,23 +6,39 @@ using IdentityServer4.Models;
 using System.Collections.Generic;
 using System.Security.Claims;
 using IdentityServer.Auth.Infrastructure;
+using IdentityServer4;
 
 namespace IdentityServer.Auth
 {
     public static class Config
     {
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new ApiScope[]
+            {
+                new("api.read"),
+                new("api.write"),
+                new("api.delete")
+            };
+
+        public static IEnumerable<ApiResource> ApiResources =>
+            new ApiResource[]
+            {
+                new("api1", "Api 1")
+                {
+                    Scopes = new[] { "api.read", "api.write", "api.delete" }
+                },
+                new("api2", "Api 2")
+                {
+                    Scopes = new[] { "api.read", "api.write", "api.delete" }
+                }
+            };
+
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource("roles", "Roles", new []{ ClaimTypes.Role })
-            };
-
-        public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[]
-            {
-                new ApiScope("api"),
+                new IdentityResource("roles", "Roles", new[] { ClaimTypes.Role })
             };
 
         public static IEnumerable<Client> Clients =>
@@ -31,29 +47,41 @@ namespace IdentityServer.Auth
                 // m2m client credentials flow client
                 new Client
                 {
-                    ClientId = "m2m.client",
-                    ClientName = "Client Credentials Client",
+                    ClientId = "console-read",
+                    ClientName = "Console read",
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
-
-                    AllowedScopes = { "scope1" }
+                    ClientSecrets = { new Secret("console-read-secret".Sha256()) },
+                    AllowedScopes = { "api.read" },
                 },
+                new Client
+                {
+                    ClientId = "console-full",
+                    ClientName = "Console Full",
 
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = { new Secret("console-full-secret".Sha256()) },
+                    AllowedScopes = { "api.read", "api.write", "api.delete" },
+                },
                 // interactive client using code flow + pkce
                 new Client
                 {
-                    ClientId = "interactive",
-                    ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
+                    ClientId = "web-read",
+                    ClientSecrets = { new Secret("web-read-secret".Sha256()) },
 
                     AllowedGrantTypes = GrantTypes.Code,
 
                     RedirectUris = { "https://localhost:44300/signin-oidc" },
-                    FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
+                    //FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
                     PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
-
                     AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "scope2" }
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "roles",
+                        "api.read"
+                    },
                 },
             };
     }

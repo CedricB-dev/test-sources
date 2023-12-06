@@ -20,23 +20,23 @@ namespace IdentityServer.Auth
         {
             var services = new ServiceCollection();
 
-            services.AddDbContext<AuthDbContext>(opt =>
-            {
-                opt.UseSqlServer(connectionString,
-                    sql =>
-                    {
-                        sql.MigrationsAssembly(typeof(SeedData).Assembly.FullName);
-                        sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityUsers");
-                    });
-            });
+            // services.AddDbContext<AuthDbContext>(opt =>
+            // {
+            //     opt.UseSqlServer(connectionString,
+            //         sql =>
+            //         {
+            //             sql.MigrationsAssembly(typeof(SeedData).Assembly.FullName);
+            //             sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityUsers");
+            //         });
+            // });
             
-            services.AddDbContext<KeysContext>(options =>
-            {
-                options.UseSqlServer(connectionString, sql =>
-                {
-                    sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityKeys");
-                });
-            });
+            // services.AddDbContext<KeysContext>(options =>
+            // {
+            //     options.UseSqlServer(connectionString, sql =>
+            //     {
+            //         sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityKeys");
+            //     });
+            // });
             
             services.AddConfigurationDbContext(options =>
             {
@@ -62,13 +62,13 @@ namespace IdentityServer.Auth
             var serviceProvider = services.BuildServiceProvider();
 
             using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            scope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
-            scope.ServiceProvider.GetService<AuthDbContext>().Database.Migrate();
-            scope.ServiceProvider.GetService<KeysContext>().Database.Migrate();
+            //scope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
+            //scope.ServiceProvider.GetService<AuthDbContext>().Database.Migrate();
+            //scope.ServiceProvider.GetService<KeysContext>().Database.Migrate();
             
             var configurationDbContext = scope.ServiceProvider.GetService<ConfigurationDbContext>();
-            configurationDbContext.Database.Migrate();
-            //EnsureSeedData(configurationDbContext);
+            //configurationDbContext.Database.Migrate();
+            EnsureSeedData(configurationDbContext);
                 
             
             //EnsureSeedData(authDbContext);
@@ -88,20 +88,33 @@ namespace IdentityServer.Auth
         
         private static void EnsureSeedData(ConfigurationDbContext context)
         {
-            if (!context.Clients.Any())
+            if (!context.ApiScopes.Any())
             {
-                Log.Debug("Clients being populated");
-                foreach (var client in Config.Clients.ToList())
+                Log.Debug("ApiScopes being populated");
+                foreach (var apiScope in Config.ApiScopes.ToList())
                 {
-                    context.Clients.Add(client.ToEntity());
+                    context.ApiScopes.Add(apiScope.ToEntity());
+                }
+            }
+            else
+            {
+                Log.Debug("ApiScopes already populated");
+            }
+            
+            if (!context.ApiResources.Any())
+            {
+                Log.Debug("ApiResources being populated");
+                foreach (var resource in Config.ApiResources.ToList())
+                {
+                    context.ApiResources.Add(resource.ToEntity());
                 }
                 context.SaveChanges();
             }
             else
             {
-                Log.Debug("Clients already populated");
+                Log.Debug("ApiResources already populated");
             }
-
+            
             if (!context.IdentityResources.Any())
             {
                 Log.Debug("IdentityResources being populated");
@@ -115,19 +128,19 @@ namespace IdentityServer.Auth
             {
                 Log.Debug("IdentityResources already populated");
             }
-
-            if (!context.ApiResources.Any())
+            
+            if (!context.Clients.Any())
             {
-                Log.Debug("ApiScopes being populated");
-                foreach (var resource in Config.ApiScopes.ToList())
+                Log.Debug("Clients being populated");
+                foreach (var client in Config.Clients.ToList())
                 {
-                    context.ApiScopes.Add(resource.ToEntity());
+                    context.Clients.Add(client.ToEntity());
                 }
                 context.SaveChanges();
             }
             else
             {
-                Log.Debug("ApiScopes already populated");
+                Log.Debug("Clients already populated");
             }
         }
     }
