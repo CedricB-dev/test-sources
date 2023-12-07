@@ -75,6 +75,7 @@ namespace IdentityServer.Auth
                     //FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
                     PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
                     AllowOfflineAccess = true,
+                    AllowPlainTextPkce = true,
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
