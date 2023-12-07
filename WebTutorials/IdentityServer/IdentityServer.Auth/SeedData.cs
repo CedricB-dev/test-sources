@@ -13,7 +13,9 @@ using IdentityServer.Auth.Infrastructure;
 using IdentityServer4.EntityFramework.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Logging;
 using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace IdentityServer.Auth
 {
@@ -23,6 +25,8 @@ namespace IdentityServer.Auth
         {
             var services = new ServiceCollection();
 
+            services.AddLogging(b => b.AddConsole());
+            
             services.AddDbContext<AuthDbContext>(opt =>
             {
                 opt.UseSqlServer(connectionString,
@@ -74,6 +78,7 @@ namespace IdentityServer.Auth
             var serviceProvider = services.BuildServiceProvider();
 
             using var scope = serviceProvider.CreateScope();
+            scope.ServiceProvider.GetService<ILogger>();
             await scope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.MigrateAsync();
             await scope.ServiceProvider.GetService<AuthDbContext>().Database.MigrateAsync();
             await scope.ServiceProvider.GetService<KeysContext>().Database.MigrateAsync();
