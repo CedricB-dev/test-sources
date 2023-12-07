@@ -2,13 +2,16 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using System.Threading.Tasks;
 using IdentityServer.Auth.Infrastructure;
 using IdentityServer4.EntityFramework.Storage;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Serilog;
 
@@ -16,27 +19,36 @@ namespace IdentityServer.Auth
 {
     public class SeedData
     {
-        public static void EnsureSeedData(string connectionString)
+        public static async Task EnsureSeedData(string connectionString)
         {
             var services = new ServiceCollection();
 
-            // services.AddDbContext<AuthDbContext>(opt =>
-            // {
-            //     opt.UseSqlServer(connectionString,
-            //         sql =>
-            //         {
-            //             sql.MigrationsAssembly(typeof(SeedData).Assembly.FullName);
-            //             sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityUsers");
-            //         });
-            // });
+            services.AddDbContext<AuthDbContext>(opt =>
+            {
+                opt.UseSqlServer(connectionString,
+                    sql =>
+                    {
+                        sql.MigrationsAssembly(typeof(SeedData).Assembly.FullName);
+                        sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityUsers");
+                    });
+            });
             
-            // services.AddDbContext<KeysContext>(options =>
-            // {
-            //     options.UseSqlServer(connectionString, sql =>
-            //     {
-            //         sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityKeys");
-            //     });
-            // });
+            services.AddIdentity<ApplicationUser, ApplicationRole>(option =>
+                {
+                    option.SignIn.RequireConfirmedEmail = false;
+                    option.SignIn.RequireConfirmedPhoneNumber = false;
+                    option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    option.Lockout.MaxFailedAccessAttempts = 5;
+                }).AddEntityFrameworkStores<AuthDbContext>()
+                .AddDefaultTokenProviders();
+            
+            services.AddDbContext<KeysContext>(options =>
+            {
+                options.UseSqlServer(connectionString, sql =>
+                {
+                    sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityKeys");
+                });
+            });
             
             services.AddConfigurationDbContext(options =>
             {
@@ -61,32 +73,62 @@ namespace IdentityServer.Auth
 
             var serviceProvider = services.BuildServiceProvider();
 
-            using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            //scope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
-            //scope.ServiceProvider.GetService<AuthDbContext>().Database.Migrate();
-            //scope.ServiceProvider.GetService<KeysContext>().Database.Migrate();
+            using var scope = serviceProvider.CreateScope();
+            await scope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.MigrateAsync();
+            await scope.ServiceProvider.GetService<AuthDbContext>().Database.MigrateAsync();
+            await scope.ServiceProvider.GetService<KeysContext>().Database.MigrateAsync();
             
             var configurationDbContext = scope.ServiceProvider.GetService<ConfigurationDbContext>();
-            //configurationDbContext.Database.Migrate();
-            EnsureSeedData(configurationDbContext);
-                
-            
-            //EnsureSeedData(authDbContext);
+            await configurationDbContext.Database.MigrateAsync();
+            EnsureApiSeedData(configurationDbContext);
+            await EnsureUserSeedData(scope);
         }
 
-        // private static void EnsureSeedData(AuthDbContext context)
-        // {
-        //     if (!context.Users.Any())
-        //     {
-        //         Log.Debug("Users being populated");
-        //         foreach (var VARIABLE in Config.Users)
-        //         {
-        //             
-        //         }
-        //     }
-        // }
+        private static async Task EnsureUserSeedData(IServiceScope serviceScope)
+        {
+            var adminRole = "Admin";
+            var cblUser = "cedric.blouin.dev@gmail.com";
+            var password = "Cbl!123!Cbl";
+            
+            var dbContext = serviceScope.ServiceProvider.GetService<AuthDbContext>()!;
+            var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<ApplicationRole>>()!;
+            var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>()!;
+            
+            var roleOrNothing = dbContext.Roles.FirstOrDefault(x => x.Name == adminRole);
+
+            if (roleOrNothing is null)
+            {
+                var roleResult = await roleManager.CreateAsync(new ApplicationRole
+                {
+                    Name = adminRole
+                });
+                Log.Debug("Roles being populated");
+            }
+            else
+            {
+                Log.Debug("Roles already populated");
+            }
+
+            var userOrNothing = dbContext.Users.FirstOrDefault(x => x.UserName == cblUser);
+
+            if (userOrNothing is null)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = cblUser
+                };
         
-        private static void EnsureSeedData(ConfigurationDbContext context)
+                var userResult = await userManager.CreateAsync(user, password);
+                var roleResult = await userManager.AddToRoleAsync(user, adminRole);
+                Log.Debug("Users being populated");
+            }
+            else
+            {
+                Log.Debug("Users already populated");
+            }
+        }
+        
+        private static void EnsureApiSeedData(ConfigurationDbContext context)
         {
             if (!context.ApiScopes.Any())
             {

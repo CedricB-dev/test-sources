@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Auth", "IdentityServer.Auth\IdentityServer.Auth.csproj", "{1595806D-E9D5-4604-8593-BA41F4BF8799}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Cons", "IdentityServer.Cons\IdentityServer.Cons.csproj", "{167ECA58-E74F-4868-A336-AFA53FEFC17A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Api1", "IdentityServer.Api1\IdentityServer.Api1.csproj", "{4504A417-9876-4834-8A2C-5A72509A666B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Cons.Read", "IdentityServer.Cons.Read\IdentityServer.Cons.Read.csproj", "{292367A9-31BC-4E62-BA32-D33138AEE179}"
@@ -18,10 +16,6 @@ Global
 		{1595806D-E9D5-4604-8593-BA41F4BF8799}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1595806D-E9D5-4604-8593-BA41F4BF8799}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1595806D-E9D5-4604-8593-BA41F4BF8799}.Release|Any CPU.Build.0 = Release|Any CPU
-		{167ECA58-E74F-4868-A336-AFA53FEFC17A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{167ECA58-E74F-4868-A336-AFA53FEFC17A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{167ECA58-E74F-4868-A336-AFA53FEFC17A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{167ECA58-E74F-4868-A336-AFA53FEFC17A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4504A417-9876-4834-8A2C-5A72509A666B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4504A417-9876-4834-8A2C-5A72509A666B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4504A417-9876-4834-8A2C-5A72509A666B}.Release|Any CPU.ActiveCfg = Release|Any CPU
