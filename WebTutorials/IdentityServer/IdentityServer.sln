@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Api1", "Iden
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Cons.Read", "IdentityServer.Cons.Read\IdentityServer.Cons.Read.csproj", "{292367A9-31BC-4E62-BA32-D33138AEE179}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer.Api2", "IdentityServer.Api2\IdentityServer.Api2.csproj", "{341F8125-04CA-4FFB-921E-27BDB323B947}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{292367A9-31BC-4E62-BA32-D33138AEE179}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{292367A9-31BC-4E62-BA32-D33138AEE179}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{292367A9-31BC-4E62-BA32-D33138AEE179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{341F8125-04CA-4FFB-921E-27BDB323B947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{341F8125-04CA-4FFB-921E-27BDB323B947}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{341F8125-04CA-4FFB-921E-27BDB323B947}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{341F8125-04CA-4FFB-921E-27BDB323B947}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

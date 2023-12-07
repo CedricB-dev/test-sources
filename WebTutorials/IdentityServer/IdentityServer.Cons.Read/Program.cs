@@ -12,7 +12,7 @@ if (discoveryDocumentResponse.IsError)
 }
 else
 {
-    var clientCredentialsTokenRequest = new ClientCredentialsTokenRequest()
+    var clientCredentialsTokenRequest = new ClientCredentialsTokenRequest
     {
         Address = discoveryDocumentResponse.TokenEndpoint,
         GrantType = OidcConstants.GrantTypes.ClientCredentials,
@@ -39,6 +39,17 @@ else
         else
         {
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
+        }
+        
+        var httpResponseMessage2 = await httpClient.GetAsync("https://localhost:7154/weatherforecast");
+        if (!httpResponseMessage2.IsSuccessStatusCode)
+        {
+            Console.WriteLine(httpResponseMessage2.StatusCode);
+        }
+        else
+        {
+            var content = await httpResponseMessage2.Content.ReadAsStringAsync();
             Console.WriteLine(content);
         }
     }
