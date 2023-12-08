@@ -3,6 +3,7 @@
 @using System.Net.Http.Headers
 @inject HttpClient HttpClient
 @inject IHttpContextAccessor HttpContextAccessor
+@attribute [Authorize]
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -44,6 +45,9 @@ else
 @code {
     private WeatherForecast[]? _forecasts;
 
+    // [CascadingParameter]
+    // public CascadingAuthenticationState AuthenticationState { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
         var token = await HttpContextAccessor.HttpContext.GetTokenAsync("access_token");
