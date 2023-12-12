@@ -32,6 +32,16 @@ namespace IdentityServer.Auth
         {
             services.AddControllersWithViews();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("all", builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                });
+            });
+            
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AuthDbContext>(opt =>
@@ -104,10 +114,13 @@ namespace IdentityServer.Auth
             }
 
             app.UseStaticFiles();
-
+            
             app.UseRouting();
+            app.UseCors("all");
+            
             app.UseIdentityServer();
             app.UseAuthorization();
+            
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
         }
     }

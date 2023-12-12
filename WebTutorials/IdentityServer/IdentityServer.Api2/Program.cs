@@ -3,6 +3,16 @@ using IdentityServer4.AccessTokenValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("all", builder =>
+    {
+        builder.AllowAnyOrigin();
+        builder.AllowAnyHeader();
+        builder.AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
     .AddIdentityServerAuthentication(options =>
     {
@@ -24,6 +34,7 @@ builder.Services.AddAuthorization(options =>
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseCors("all");
 
 app.UseAuthentication();
 app.UseAuthorization();

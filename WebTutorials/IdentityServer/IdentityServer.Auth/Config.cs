@@ -45,37 +45,53 @@ namespace IdentityServer.Auth
             new Client[]
             {
                 // m2m client credentials flow client
+                // new Client
+                // {
+                //     ClientId = "console-read",
+                //     ClientName = "Console read",
+                //
+                //     AllowedGrantTypes = GrantTypes.ClientCredentials,
+                //     ClientSecrets = { new Secret("console-read-secret".Sha256()) },
+                //     AllowedScopes = { "api.read" },
+                // },
+                // new Client
+                // {
+                //     ClientId = "console-full",
+                //     ClientName = "Console Full",
+                //
+                //     AllowedGrantTypes = GrantTypes.ClientCredentials,
+                //     ClientSecrets = { new Secret("console-full-secret".Sha256()) },
+                //     AllowedScopes = { "api.read", "api.write", "api.delete" },
+                // },
+                // // interactive client using code flow + pkce
+                // new Client
+                // {
+                //     ClientId = "web-read",
+                //     ClientSecrets = { new Secret("web-read-secret".Sha256()) },
+                //
+                //     AllowedGrantTypes = GrantTypes.Code,
+                //
+                //     RedirectUris = { "https://localhost:44300/signin-oidc" },
+                //     //FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
+                //     PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
+                //     AllowOfflineAccess = true,
+                //     AllowPlainTextPkce = true,
+                //     AllowedScopes =
+                //     {
+                //         IdentityServerConstants.StandardScopes.OpenId,
+                //         IdentityServerConstants.StandardScopes.Profile,
+                //         "roles",
+                //         "api.read"
+                //     },
+                // },
                 new Client
                 {
-                    ClientId = "console-read",
-                    ClientName = "Console read",
-
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = { new Secret("console-read-secret".Sha256()) },
-                    AllowedScopes = { "api.read" },
-                },
-                new Client
-                {
-                    ClientId = "console-full",
-                    ClientName = "Console Full",
-
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = { new Secret("console-full-secret".Sha256()) },
-                    AllowedScopes = { "api.read", "api.write", "api.delete" },
-                },
-                // interactive client using code flow + pkce
-                new Client
-                {
-                    ClientId = "web-read",
-                    ClientSecrets = { new Secret("web-read-secret".Sha256()) },
-
+                    ClientId = "react-app",
+                    ClientSecrets = { new Secret("react-app-secret".Sha256()) },
                     AllowedGrantTypes = GrantTypes.Code,
-
-                    RedirectUris = { "https://localhost:44300/signin-oidc" },
-                    //FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
+                    RedirectUris = { "http://localhost:5173/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:5173/signout-oidc" },
                     AllowOfflineAccess = true,
-                    AllowPlainTextPkce = true,
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
