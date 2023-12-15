@@ -27,7 +27,7 @@ export const FetchData: React.FC = () => {
         const fetchData = async () => {
             const user = getUser();
             const token = user?.access_token;
-            const response = await fetch('https://localhost:7154/weatherforecast', {
+            const response = await fetch('https://localhost:7201/weatherforecast', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }

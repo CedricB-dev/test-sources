@@ -52,7 +52,7 @@ else
     {
         var token = await HttpContextAccessor.HttpContext.GetTokenAsync("access_token");
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        _forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("https://localhost:7154/weatherforecast");
+        _forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("https://localhost:7201/weatherforecast");
     }
 
     private class WeatherForecast

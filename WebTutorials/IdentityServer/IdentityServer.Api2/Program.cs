@@ -2,7 +2,6 @@ using IdentityServer.Api2;
 using IdentityServer4.AccessTokenValidation;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("all", builder =>
@@ -39,8 +38,9 @@ app.UseCors("all");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weatherforecast", (ILogger<Program> logger) =>
 {
+    logger.LogInformation("Get weatherforecast");
     var summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
