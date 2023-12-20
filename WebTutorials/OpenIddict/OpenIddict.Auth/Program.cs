@@ -1,100 +1,67 @@
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
+using OpenIddict.Auth;
 using OpenIddict.Auth.Infrastructure;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace OpenIddict.Auth;
 
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("all", builder =>
+    public static async Task<int> Main(string[] args)
     {
-        builder.AllowAnyOrigin();
-        builder.AllowAnyHeader();
-        builder.AllowAnyMethod();
-    });
-});
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
+            .CreateLogger();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+        try
+        {
+            var seed = args.Contains("/seed");
+            if (seed)
+            {
+                args = args.Except(new[] { "/seed" }).ToArray();
+            }
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var host = CreateHostBuilder(args).Build();
 
-builder.Services.AddDbContext<AuthDbContext>(opt =>
-{
-    opt.UseOpenIddict();
-    opt.UseSqlServer(connectionString);
-    opt.EnableSensitiveDataLogging();
-});
+            if (seed)
+            {
+                Log.Information("Seeding database...");
+                var config = host.Services.GetRequiredService<IConfiguration>();
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                await SeedData.EnsureSeedData(connectionString);
+                Log.Information("Done seeding database.");
+                return 0;
+            }
 
+            Log.Information("Starting host...");
+            await host.RunAsync();
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Host terminated unexpectedly.");
+            return 1;
+        }
+        finally
+        {
+            await Log.CloseAndFlushAsync();
+        }
+    }
 
-builder.Services.AddOpenIddict()
-    .AddCore(x =>
-    {
-        x.UseEntityFrameworkCore().UseDbContext<AuthDbContext>();
-    })
-    .AddServer(x =>
-    {
-        x.AllowClientCredentialsFlow();
-        x.AllowAuthorizationCodeFlow();
-        
-        x.SetAuthorizationEndpointUris("connect/authorize");
-        x.SetTokenEndpointUris("connect/token");
-        x.SetUserinfoEndpointUris("connect/userinfo");
-        x.SetIntrospectionEndpointUris("connect/introspect");
-        
-        x.AddDevelopmentEncryptionCertificate();
-        x.AddDevelopmentSigningCertificate();
-
-        x.RegisterScopes(
-            OpenIddictConstants.Scopes.OpenId,
-            OpenIddictConstants.Scopes.Profile,
-            OpenIddictConstants.Scopes.Roles,
-            // "api.read",
-            // "api.write",
-            // "api.delete",
-            OpenIddictConstants.Scopes.OfflineAccess);
-        
-        x.RegisterClaims(
-            OpenIddictConstants.Claims.Subject,
-            OpenIddictConstants.Claims.Name,
-            OpenIddictConstants.Claims.FamilyName,
-            OpenIddictConstants.Claims.GivenName,
-            OpenIddictConstants.Claims.MiddleName,
-            OpenIddictConstants.Claims.Nickname,
-            OpenIddictConstants.Claims.PreferredUsername,
-            OpenIddictConstants.Claims.Profile,
-            OpenIddictConstants.Claims.Picture,
-            OpenIddictConstants.Claims.Website,
-            OpenIddictConstants.Claims.Gender,
-            OpenIddictConstants.Claims.Birthdate,
-            OpenIddictConstants.Claims.Zoneinfo,
-            OpenIddictConstants.Claims.Locale,
-            OpenIddictConstants.Claims.UpdatedAt,
-            OpenIddictConstants.Claims.Role);
-        
-        x.UseAspNetCore()
-            .EnableAuthorizationEndpointPassthrough()
-            .EnableTokenEndpointPassthrough()
-            .EnableUserinfoEndpointPassthrough();
-    });
-
-
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    private static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseSerilog()
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
-
-app.UseCors("all");
-
-//app.UseHttpsRedirection();
-//app.UseAuthorization();
-app.UseAuthentication();
-
-app.Run();
