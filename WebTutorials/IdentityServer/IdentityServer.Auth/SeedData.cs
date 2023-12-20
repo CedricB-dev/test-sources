@@ -95,9 +95,9 @@ namespace IdentityServer.Auth
             var cblUser = "cedric.blouin.dev@gmail.com";
             var password = "Cbl!123!Cbl";
             
-            var dbContext = serviceScope.ServiceProvider.GetService<AuthDbContext>()!;
-            var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<ApplicationRole>>()!;
-            var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>()!;
+            var dbContext = serviceScope.ServiceProvider.GetRequiredService<AuthDbContext>();
+            var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             
             var roleOrNothing = dbContext.Roles.FirstOrDefault(x => x.Name == adminRole);
 
