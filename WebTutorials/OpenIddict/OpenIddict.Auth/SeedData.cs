@@ -24,7 +24,18 @@ public class SeedData
                     sql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "identityUsers");
                 });
         });
+
+        services.AddIdentity<ApplicationUser, ApplicationRole>(option =>
+            {
+                option.SignIn.RequireConfirmedEmail = false;
+                option.SignIn.RequireConfirmedPhoneNumber = false;
+                option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                option.Lockout.MaxFailedAccessAttempts = 5;
+            }).AddEntityFrameworkStores<AuthDbContext>()
+            .AddDefaultTokenProviders();
         
+        services.AddOpenIddict().AddCore(x => { x.UseEntityFrameworkCore().UseDbContext<AuthDbContext>(); });
+
         var serviceProvider = services.BuildServiceProvider();
 
         using var scope = serviceProvider.CreateScope();
@@ -39,11 +50,11 @@ public class SeedData
         var adminRole = "Admin";
         var cblUser = "cedric.blouin.dev@gmail.com";
         var password = "Cbl!123!Cbl";
-            
+
         var dbContext = serviceScope.ServiceProvider.GetRequiredService<AuthDbContext>();
         var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            
+
         var roleOrNothing = dbContext.Roles.FirstOrDefault(x => x.Name == adminRole);
 
         if (roleOrNothing is null)
@@ -67,7 +78,7 @@ public class SeedData
             {
                 UserName = cblUser
             };
-        
+
             var userResult = await userManager.CreateAsync(user, password);
             var roleResult = await userManager.AddToRoleAsync(user, adminRole);
             Log.Debug("Users being populated");
@@ -87,7 +98,7 @@ public class SeedData
     private static async Task InitClients(IServiceScope scope)
     {
         var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
-        
+
         if (await applicationManager.FindByClientIdAsync("console-reader") is null)
         {
             var descriptor = new OpenIddictApplicationDescriptor
@@ -100,10 +111,10 @@ public class SeedData
                     OpenIddictConstants.Permissions.Endpoints.Token,
                     OpenIddictConstants.Permissions.Endpoints.Introspection,
                     OpenIddictConstants.Permissions.Endpoints.Revocation,
-                    
+
                     OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                    
+
                     OpenIddictConstants.Permissions.Prefixes.Scope + "api.read"
                 }
             };
@@ -115,7 +126,7 @@ public class SeedData
     private static async Task InitScopes(IServiceScope scope)
     {
         var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
-        
+
         if (await scopeManager.FindByNameAsync("api") is null)
         {
             var descriptor = new OpenIddictScopeDescriptor
@@ -129,7 +140,7 @@ public class SeedData
 
             await scopeManager.CreateAsync(descriptor);
         }
-        
+
         if (await scopeManager.FindByNameAsync("api.write") is null)
         {
             var descriptor = new OpenIddictScopeDescriptor
@@ -143,7 +154,7 @@ public class SeedData
 
             await scopeManager.CreateAsync(descriptor);
         }
-        
+
         if (await scopeManager.FindByNameAsync("api.delete") is null)
         {
             var descriptor = new OpenIddictScopeDescriptor
