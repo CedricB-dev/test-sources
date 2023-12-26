@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 
+
 namespace OpenIddict.Auth.Controllers;
 
 public class AuthorizationController : Controller

@@ -1,5 +1,7 @@
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Auth.Infrastructure;
 
@@ -53,11 +55,25 @@ public class Startup
             }).AddEntityFrameworkStores<AuthDbContext>()
             .AddDefaultTokenProviders();
         
+        byte[] secretKey = new byte[128]; // 128 octets = 1024 bits
+        using (var random = RandomNumberGenerator.Create())
+        {
+            random.GetBytes(secretKey);
+        }
         
         services.AddOpenIddict()
             .AddCore(x => { x.UseEntityFrameworkCore().UseDbContext<AuthDbContext>(); })
+            .AddValidation(x =>
+            {
+                //x.UseLocalServer();
+            })
             .AddServer(x =>
             {
+                x.DisableAccessTokenEncryption();
+                
+                // x.AddSigningKey(new SymmetricSecurityKey(secretKey))
+                //     .DisableAccessTokenEncryption();
+                
                 x.AllowClientCredentialsFlow();
                 x.AllowAuthorizationCodeFlow();
 
@@ -69,8 +85,7 @@ public class Startup
                 x.AddDevelopmentEncryptionCertificate();
                 x.AddDevelopmentSigningCertificate();
 
-                // x
-                //     .AddEphemeralEncryptionKey()
+                // x.AddEphemeralEncryptionKey()
                 //     .AddEphemeralSigningKey();
                 
                 x.RegisterScopes(
