@@ -55,11 +55,11 @@ public class Startup
             }).AddEntityFrameworkStores<AuthDbContext>()
             .AddDefaultTokenProviders();
         
-        byte[] secretKey = new byte[128]; // 128 octets = 1024 bits
-        using (var random = RandomNumberGenerator.Create())
-        {
-            random.GetBytes(secretKey);
-        }
+        // byte[] secretKey = new byte[128]; // 128 octets = 1024 bits
+        // using (var random = RandomNumberGenerator.Create())
+        // {
+        //     random.GetBytes(secretKey);
+        // }
         
         services.AddOpenIddict()
             .AddCore(x => { x.UseEntityFrameworkCore().UseDbContext<AuthDbContext>(); })
