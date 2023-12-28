@@ -21,7 +21,7 @@ builder.Services.AddOpenIddict()
     .AddValidation(opt =>
     {
         opt.SetIssuer("https://localhost:7279");
-        //opt.AddAudiences("api2");
+        opt.AddAudiences("api2");
         
         opt.UseSystemNetHttp();
         opt.UseAspNetCore();

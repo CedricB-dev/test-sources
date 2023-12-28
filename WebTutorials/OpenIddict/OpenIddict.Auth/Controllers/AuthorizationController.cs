@@ -9,8 +9,15 @@ namespace OpenIddict.Auth.Controllers;
 
 public class AuthorizationController : Controller
 {
+    private readonly IOpenIddictScopeManager _scopeManager;
+
+    public AuthorizationController(IOpenIddictScopeManager scopeManager)
+    {
+        _scopeManager = scopeManager;
+    }
+    
     [HttpPost("~/connect/token")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         var request = HttpContext.GetOpenIddictServerRequest();
 
@@ -21,6 +28,7 @@ public class AuthorizationController : Controller
             identity.AddClaim("test", "abc", OpenIddictConstants.Destinations.AccessToken);
             
             identity.SetScopes(request.GetScopes());
+            identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
             var claimsPrincipal = new ClaimsPrincipal(identity);
             
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
