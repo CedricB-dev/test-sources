@@ -9,8 +9,6 @@ namespace OpenIddict.Auth.Controllers;
 
 public class AuthorizationController : Controller
 {
-    
-    
     [HttpPost("~/connect/token")]
     public IActionResult Index()
     {

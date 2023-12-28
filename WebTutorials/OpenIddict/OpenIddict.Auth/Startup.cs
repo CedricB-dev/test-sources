@@ -63,10 +63,10 @@ public class Startup
         
         services.AddOpenIddict()
             .AddCore(x => { x.UseEntityFrameworkCore().UseDbContext<AuthDbContext>(); })
-            .AddValidation(x =>
-            {
-                //x.UseLocalServer();
-            })
+            // .AddValidation(x =>
+            // {
+            //     //x.UseLocalServer();
+            // })
             .AddServer(x =>
             {
                 x.DisableAccessTokenEncryption();

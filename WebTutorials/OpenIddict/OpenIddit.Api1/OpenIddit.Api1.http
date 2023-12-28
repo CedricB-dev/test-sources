@@ -1,0 +1,6 @@
+@OpenIddit.Api1_HostAddress = http://localhost:5229
+
+GET {{OpenIddit.Api1_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
