@@ -103,7 +103,7 @@ public class SeedData
         {
             var descriptor = new OpenIddictApplicationDescriptor
             {
-                ClientId = "console-reader",
+                ClientId = "console-read",
                 ClientSecret = "console-read-secret",
                 ClientType = OpenIddictConstants.ClientTypes.Confidential,
                 Permissions =
