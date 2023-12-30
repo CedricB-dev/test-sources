@@ -92,8 +92,8 @@ namespace IdentityServer.Auth
         private static async Task EnsureUserSeedData(IServiceScope serviceScope)
         {
             var adminRole = "Admin";
-            var cblUser = "cedric.blouin.dev@gmail.com";
-            var password = "Cbl!123!Cbl";
+            var testUser = "test@test.com";
+            var password = "test!123!test";
             
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
@@ -114,13 +114,13 @@ namespace IdentityServer.Auth
                 Log.Debug("Roles already populated");
             }
 
-            var userOrNothing = dbContext.Users.FirstOrDefault(x => x.UserName == cblUser);
+            var userOrNothing = dbContext.Users.FirstOrDefault(x => x.UserName == testUser);
 
             if (userOrNothing is null)
             {
                 var user = new ApplicationUser
                 {
-                    UserName = cblUser
+                    UserName = testUser
                 };
         
                 var userResult = await userManager.CreateAsync(user, password);
