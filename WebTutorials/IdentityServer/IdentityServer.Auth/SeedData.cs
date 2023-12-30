@@ -93,7 +93,7 @@ namespace IdentityServer.Auth
         {
             var adminRole = "Admin";
             var testUser = "test@test.com";
-            var password = "test!123!test";
+            var password = "Test!123!Test";
             
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
