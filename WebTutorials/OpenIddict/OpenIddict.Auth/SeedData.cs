@@ -17,6 +17,7 @@ public class SeedData
         services.AddDbContext<AuthDbContext>(opt =>
         {
             opt.UseOpenIddict();
+            opt.EnableSensitiveDataLogging();
             opt.UseSqlServer(connectionString,
                 sql =>
                 {
@@ -33,7 +34,7 @@ public class SeedData
                 option.Lockout.MaxFailedAccessAttempts = 5;
             }).AddEntityFrameworkStores<AuthDbContext>()
             .AddDefaultTokenProviders();
-        
+
         services.AddOpenIddict().AddCore(x => { x.UseEntityFrameworkCore().UseDbContext<AuthDbContext>(); });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -48,8 +49,8 @@ public class SeedData
     private static async Task EnsureUserSeedData(IServiceScope serviceScope)
     {
         var adminRole = "Admin";
-        var cblUser = "cedric.blouin.dev@gmail.com";
-        var password = "Cbl!123!Cbl";
+        var testUser = "test@test.com";
+        var password = "Test!123!Test";
 
         var dbContext = serviceScope.ServiceProvider.GetRequiredService<AuthDbContext>();
         var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
@@ -61,7 +62,7 @@ public class SeedData
         {
             var roleResult = await roleManager.CreateAsync(new ApplicationRole
             {
-                Name = adminRole
+                Name = adminRole,
             });
             Log.Debug("Roles being populated");
         }
@@ -70,13 +71,14 @@ public class SeedData
             Log.Debug("Roles already populated");
         }
 
-        var userOrNothing = dbContext.Users.FirstOrDefault(x => x.UserName == cblUser);
+        var userOrNothing = dbContext.Users.FirstOrDefault(x => x.UserName == testUser);
 
         if (userOrNothing is null)
         {
             var user = new ApplicationUser
             {
-                UserName = cblUser
+                UserName = testUser,
+                SecurityStamp = Guid.NewGuid().ToString()
             };
 
             var userResult = await userManager.CreateAsync(user, password);
@@ -99,16 +101,19 @@ public class SeedData
     {
         var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
-        if (await applicationManager.FindByClientIdAsync("console-reader") is null)
+        if (await applicationManager.FindByClientIdAsync("console-read") is null)
         {
             var descriptor = new OpenIddictApplicationDescriptor
             {
                 ClientId = "console-read",
                 ClientSecret = "console-read-secret",
                 ClientType = OpenIddictConstants.ClientTypes.Confidential,
+                ConsentType = OpenIddictConstants.ConsentTypes.Implicit,
                 Permissions =
                 {
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
                     OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.Logout,
                     OpenIddictConstants.Permissions.Endpoints.Introspection,
                     OpenIddictConstants.Permissions.Endpoints.Revocation,
 
@@ -121,13 +126,50 @@ public class SeedData
 
             await applicationManager.CreateAsync(descriptor);
         }
+
+        if (await applicationManager.FindByClientIdAsync("web-read") is null)
+        {
+            var descriptor = new OpenIddictApplicationDescriptor
+            {
+                ClientId = "web-read",
+                ClientSecret = "web-read-secret",
+                ConsentType = OpenIddictConstants.ConsentTypes.Implicit,
+                ClientType = OpenIddictConstants.ClientTypes.Confidential,
+                RedirectUris = { new Uri("https://localhost:7170/signin-oidc") },
+                PostLogoutRedirectUris = { new Uri("https://localhost:7170/signout-callback-oidc") },
+                Permissions =
+                {
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
+                    OpenIddictConstants.Permissions.Endpoints.Logout,
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.Introspection,
+                    OpenIddictConstants.Permissions.Endpoints.Revocation,
+                    
+                    OpenIddictConstants.Permissions.ResponseTypes.Code,
+                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                    OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                    
+                    OpenIddictConstants.Permissions.Scopes.Profile,
+                    OpenIddictConstants.Permissions.Scopes.Roles,
+                    
+                    
+                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OpenId,
+                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Profile,
+                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Roles,
+                    //OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OfflineAccess,
+                    OpenIddictConstants.Permissions.Prefixes.Scope + "api.read"
+                }
+            };
+
+            await applicationManager.CreateAsync(descriptor);
+        }
     }
 
     private static async Task InitScopes(IServiceScope scope)
     {
         var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
 
-        if (await scopeManager.FindByNameAsync("api") is null)
+        if (await scopeManager.FindByNameAsync("api.read") is null)
         {
             var descriptor = new OpenIddictScopeDescriptor
             {

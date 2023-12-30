@@ -36,7 +36,8 @@ public class Startup
         // services.AddEndpointsApiExplorer();
         // services.AddSwaggerGen();
 
-        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie();
         
         var connectionString = Configuration.GetConnectionString("DefaultConnection");
 

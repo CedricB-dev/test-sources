@@ -42,34 +42,39 @@ public class AccountController : Controller
             return View(viewModel);
         }
 
-        var user = await _userManager.FindByNameAsync(viewModel.Username);
+        // var user = await _userManager.FindByNameAsync(viewModel.Username);
         var result = await _signInManager.PasswordSignInAsync(viewModel.Username, viewModel.Password,
             viewModel.RememberMe, lockoutOnFailure: true);
-        
-        AuthenticationProperties props = null;
-        if(user is not null && result.Succeeded)
+        if (result.Succeeded)
         {
-            if (viewModel.RememberMe)
-            {
-                props = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.Add(TimeSpan.FromDays(30)),
-                };
-            }
-            
-            var claims = new List<Claim>();
-            var roles = await _userManager.GetRolesAsync(user);
-            claims.AddRange(roles.Select(role => new Claim(OpenIddictConstants.Claims.Role, role)));
-            claims.Add(new(OpenIddictConstants.Claims.Name, user.UserName));
-            claims.Add(new(OpenIddictConstants.Claims.Subject, user.Id.ToString()));
-            var claimsIdentity = new ClaimsIdentity(claims);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme ,claimsPrincipal, props);
-            
-            return LocalRedirect(viewModel.ReturnUrl);
+            return Redirect(viewModel.ReturnUrl);
         }
+        
+        //
+        // AuthenticationProperties props = null;
+        // if(user is not null && result.Succeeded)
+        // {
+        //     if (viewModel.RememberMe)
+        //     {
+        //         props = new AuthenticationProperties
+        //         {
+        //             IsPersistent = true,
+        //             ExpiresUtc = DateTimeOffset.UtcNow.Add(TimeSpan.FromDays(30)),
+        //         };
+        //     }
+        //     
+        //     var claims = new List<Claim>();
+        //     var roles = await _userManager.GetRolesAsync(user);
+        //     claims.AddRange(roles.Select(role => new Claim(OpenIddictConstants.Claims.Role, role)));
+        //     claims.Add(new(OpenIddictConstants.Claims.Name, user.UserName));
+        //     claims.Add(new(OpenIddictConstants.Claims.Subject, user.Id.ToString()));
+        //     var claimsIdentity = new ClaimsIdentity(claims);
+        //     var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+        //     
+        //     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme ,claimsPrincipal, props);
+        //     
+        //     return LocalRedirect(viewModel.ReturnUrl);
+        // }
         
         return View(viewModel);
     }
