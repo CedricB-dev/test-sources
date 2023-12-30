@@ -1,7 +1,6 @@
-using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Auth.Infrastructure;
 
@@ -37,6 +36,8 @@ public class Startup
         // services.AddEndpointsApiExplorer();
         // services.AddSwaggerGen();
 
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+        
         var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<AuthDbContext>(opt =>
@@ -136,8 +137,8 @@ public class Startup
         app.UseCors("all");
         
         //app.UseHttpsRedirection();
-        //app.UseAuthorization();
         app.UseAuthentication();
+        app.UseAuthorization();
         
         app.UseEndpoints(endpoints =>
         {
