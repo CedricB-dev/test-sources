@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using OpenIddict.Client;
+using OpenIddict.Client.AspNetCore;
 using OpenIddict.Web1.Components;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,28 +15,79 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 
 builder.Services.AddAuthentication(o =>
+{
+    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //o.DefaultChallengeScheme = OpenIddictClientAspNetCoreDefaults.AuthenticationScheme;
+}).AddCookie(opt =>
+{
+    opt.LoginPath = "/login";
+    // opt.LogoutPath = "/logout";
+    // opt.ExpireTimeSpan = TimeSpan.FromMinutes(50);
+    // opt.SlidingExpiration = false;
+});
+// .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, o =>
+// {
+//     o.RequireHttpsMetadata = false;
+//     o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//     o.SignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
+//     o.Authority = "https://localhost:7279";
+//     o.ClientId = "web-read";
+//     o.ClientSecret = "web-read-secret";
+//     o.ResponseType = OpenIdConnectResponseType.Code;
+//     //o.Scope.Add( OpenIdConnectScope.OpenId);
+//     //o.Scope.Add(OpenIdConnectScope.OpenIdProfile);
+//     //o.Scope.Add( "roles");
+//     o.Scope.Add("api.read");
+//     //o.Scope.Add(OpenIdConnectScope.OfflineAccess);
+//     //o.ClaimActions.MapJsonKey("role", "role");
+//     //o.GetClaimsFromUserInfoEndpoint = true;
+//     o.SaveTokens = true;
+// });
+
+builder.Services.AddOpenIddict()
+    // .AddCore(opt =>
+    // {
+    // })
+    .AddClient(opt =>
     {
-        o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        o.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, o =>
-    {
-        o.RequireHttpsMetadata = false;
-        o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        o.SignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
-        o.Authority = "https://localhost:7279";
-        o.ClientId = "web-read";
-        o.ClientSecret = "web-read-secret";
-        o.ResponseType = OpenIdConnectResponseType.Code;
-        //o.Scope.Add( OpenIdConnectScope.OpenId);
-        o.Scope.Add(OpenIdConnectScope.OpenIdProfile);
-        o.Scope.Add( "roles");
-        o.Scope.Add("api.read");
-        //o.Scope.Add(OpenIdConnectScope.OfflineAccess);
-        o.ClaimActions.MapJsonKey("role", "role");
-        //o.GetClaimsFromUserInfoEndpoint = true;
-        o.SaveTokens = true;
+        opt.DisableTokenStorage();
+        opt.AllowAuthorizationCodeFlow()
+            .AllowRefreshTokenFlow();
+        
+        opt.AddDevelopmentEncryptionCertificate()
+            .AddDevelopmentSigningCertificate();
+
+        // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+        opt.UseAspNetCore()
+            .EnableStatusCodePagesIntegration()
+            .EnableRedirectionEndpointPassthrough()
+            .EnablePostLogoutRedirectionEndpointPassthrough();
+
+        opt.UseSystemNetHttp();
+            //.SetProductInformation(typeof(Startup).Assembly);
+        
+        opt.AddRegistration(new OpenIddictClientRegistration
+        {
+            Issuer = new Uri("https://localhost:7279"),
+            ClientId = "web-read",
+            ClientSecret = "web-read-secret",
+            Scopes = { Scopes.OpenId, Scopes.Profile, Scopes.Roles, "api.read" },
+            ResponseTypes = { ResponseTypes.Code },
+            GrantTypes = { GrantTypes.AuthorizationCode },
+            RedirectUri = new Uri("https://localhost:7170/callback/login"),
+            PostLogoutRedirectUri = new Uri("https://localhost:7170/signout-callback-oidc")
+        });
     });
+
+// .AddValidation(opt =>
+// {
+//     opt.SetIssuer("https://localhost:7279");
+//     opt.SetClientId("web-read");
+//     opt.SetClientSecret("web-read-secret");
+//     
+//     opt.UseSystemNetHttp();
+//     opt.UseAspNetCore();
+// })
 
 var app = builder.Build();
 
@@ -50,7 +101,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseRouting();
+//app.UseRouting();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

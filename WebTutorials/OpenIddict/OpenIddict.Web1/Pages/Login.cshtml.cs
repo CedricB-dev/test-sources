@@ -1,16 +1,14 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OpenIddict.Client.AspNetCore;
 
 namespace OpenIddict.Web1.Components.Pages;
 
 public class Login : PageModel
 {
-    public async Task<IActionResult> OnGetAsync(string redirectUri)
+    public IActionResult OnGet(string redirectUri)
     {
-        await Task.CompletedTask;
-
         if (string.IsNullOrWhiteSpace(redirectUri))
         {
             redirectUri = Url.Content("~/");
@@ -26,7 +24,6 @@ public class Login : PageModel
             new AuthenticationProperties
             {
                 RedirectUri = redirectUri
-            },
-            OpenIdConnectDefaults.AuthenticationScheme);
+            }, OpenIddictClientAspNetCoreDefaults.AuthenticationScheme);
     }
 }

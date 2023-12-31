@@ -163,6 +163,43 @@ public class SeedData
 
             await applicationManager.CreateAsync(descriptor);
         }
+        
+        if (await applicationManager.FindByClientIdAsync("insomnia") is null)
+        {
+            var descriptor = new OpenIddictApplicationDescriptor
+            {
+                ClientId = "insomnia",
+                ClientSecret = "insomnia-secret",
+                ConsentType = OpenIddictConstants.ConsentTypes.Implicit,
+                ClientType = OpenIddictConstants.ClientTypes.Confidential,
+                RedirectUris = { new Uri("https://insomnia.rest") },
+                //PostLogoutRedirectUris = { new Uri("https://localhost:7170/signout-callback-oidc") },
+                Permissions =
+                {
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
+                    OpenIddictConstants.Permissions.Endpoints.Logout,
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.Introspection,
+                    OpenIddictConstants.Permissions.Endpoints.Revocation,
+                    
+                    OpenIddictConstants.Permissions.ResponseTypes.Code,
+                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                    OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                    
+                    OpenIddictConstants.Permissions.Scopes.Profile,
+                    OpenIddictConstants.Permissions.Scopes.Roles,
+                    
+                    
+                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OpenId,
+                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Profile,
+                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Roles,
+                    //OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OfflineAccess,
+                    OpenIddictConstants.Permissions.Prefixes.Scope + "api.read"
+                }
+            };
+
+            await applicationManager.CreateAsync(descriptor);
+        }
     }
 
     private static async Task InitScopes(IServiceScope scope)
