@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OpenIddict.Client.AspNetCore;
 
-namespace OpenIddict.Web1.Components.Pages;
+namespace OpenIddict.Web1.Pages;
 
 public class Login : PageModel
 {

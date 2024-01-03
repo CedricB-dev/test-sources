@@ -1,10 +1,9 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using OpenIddict.Abstractions;
 using OpenIddict.Client.AspNetCore;
 
-namespace OpenIddict.Web1.Components.Pages;
+namespace OpenIddict.Web1.Pages;
 
 public class LoginCallback : PageModel
 {
