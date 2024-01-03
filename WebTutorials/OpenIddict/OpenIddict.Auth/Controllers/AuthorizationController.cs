@@ -273,13 +273,13 @@ public class AuthorizationController : Controller
 
             return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
-
+        
         if (request.IsAuthorizationCodeGrantType() || request.IsDeviceCodeGrantType() ||
             request.IsRefreshTokenGrantType())
         {
             // Retrieve the claims principal stored in the authorization code/device code/refresh token.
             var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-
+        
             // Retrieve the user profile corresponding to the authorization code/refresh token.
             var user = await _userManager.FindByIdAsync(result.Principal.GetClaim(OpenIddictConstants.Claims.Subject));
             if (user is null)
@@ -294,7 +294,7 @@ public class AuthorizationController : Controller
                             "The token is no longer valid."
                     }));
             }
-
+        
             // Ensure the user is still allowed to sign in.
             if (!await _signInManager.CanSignInAsync(user))
             {
@@ -308,12 +308,12 @@ public class AuthorizationController : Controller
                             "The user is no longer allowed to sign in."
                     }));
             }
-
+        
             var identity = new ClaimsIdentity(result.Principal.Claims,
                 authenticationType: TokenValidationParameters.DefaultAuthenticationType,
                 nameType: OpenIddictConstants.Claims.Name,
                 roleType: OpenIddictConstants.Claims.Role);
-
+        
             // Override the user claims present in the principal in case they
             // changed since the authorization code/refresh token was issued.
             identity.SetClaim(OpenIddictConstants.Claims.Subject, await _userManager.GetUserIdAsync(user))
@@ -322,7 +322,7 @@ public class AuthorizationController : Controller
                 .SetClaims(OpenIddictConstants.Claims.Role, (await _userManager.GetRolesAsync(user)).ToImmutableArray());
             //identity.AddClaim("test", "abc", OpenIddictConstants.Destinations.AccessToken);
             //identity.SetDestinations(GetDestinations);
-
+        
             //var scopes = request.GetScopes();
             //identity.SetScopes(scopes);
             //var resources = await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync();
