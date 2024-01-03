@@ -78,6 +78,7 @@ public class Startup
                 
                 x.AllowClientCredentialsFlow();
                 x.AllowAuthorizationCodeFlow();
+                x.AllowRefreshTokenFlow();
 
                 x.SetAuthorizationEndpointUris("connect/authorize");
                 x.SetTokenEndpointUris("connect/token");
@@ -89,6 +90,8 @@ public class Startup
 
                 // x.AddEphemeralEncryptionKey()
                 //     .AddEphemeralSigningKey();
+
+                x.SetAccessTokenLifetime(TimeSpan.FromMinutes(2));
                 
                 x.RegisterScopes(
                     OpenIddictConstants.Scopes.OpenId,
