@@ -1,11 +1,7 @@
 ﻿@page "/weather"
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Authentication
-@using System.Net.Http.Headers
-@using Microsoft.AspNetCore.Authentication.Cookies
-@using OpenIddict.Client.AspNetCore
-@inject HttpClient HttpClient
-@inject IHttpContextAccessor HttpContextAccessor
+@using OpenIddict.Web1.Services
+@inject WeatherService WeatherService
 @attribute [Authorize]
 @attribute [StreamRendering]
 
@@ -51,24 +47,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        //With OpenIddict
-        // var token = await HttpContextAccessor.HttpContext.GetTokenAsync(
-        //     scheme: CookieAuthenticationDefaults.AuthenticationScheme,
-        //     tokenName: OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken);
-        
-        //With OpenIdConnect
-        var token = await HttpContextAccessor.HttpContext.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme,"access_token");
-        
-        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        _forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("https://localhost:7136/weatherforecast");
+        _forecasts = await WeatherService.GetForecastAsync();
     }
-
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-
 }

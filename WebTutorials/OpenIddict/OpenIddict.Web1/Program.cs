@@ -3,6 +3,7 @@ using OpenIddict.Client;
 using OpenIddict.Client.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
 using OpenIddict.Web1.Components;
+using OpenIddict.Web1.Services;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,17 +14,22 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();
+//builder.Services.AddAccessTokenManagement();
+builder.Services.AddTransient<HttpContextUserBearerTokenHandler>();
+builder.Services.AddTransient<WeatherService>();
+builder.Services.AddHttpClient("weather", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7136/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+})//.AddUserAccessTokenHandler();
+.AddHttpMessageHandler<HttpContextUserBearerTokenHandler>();
 
 //With OpenIdConnect
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
     o.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme;
-}).AddCookie(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,opt =>
-{
-    //opt.LoginPath = "/login";
-})
+}).AddCookie(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
 .AddOpenIdConnect(Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme, o =>
 {
     o.RequireHttpsMetadata = false;
@@ -33,11 +39,10 @@ builder.Services.AddAuthentication(o =>
     o.ClientId = "web-read";
     //o.ClientSecret = "web-read-secret";
     o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
-    //o.Scope.Add( Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectScope.OpenId);
     o.Scope.Add(Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectScope.OpenIdProfile);
     o.Scope.Add( "roles");
     o.Scope.Add("api.read");
-    //o.Scope.Add(OpenIdConnectScope.OfflineAccess);
+    o.Scope.Add(Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectScope.OfflineAccess);
     o.ClaimActions.MapJsonKey("role", "role");
     o.GetClaimsFromUserInfoEndpoint = true;
     o.SaveTokens = true;
