@@ -51,11 +51,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await HttpContextAccessor.HttpContext.GetTokenAsync(
-            scheme: CookieAuthenticationDefaults.AuthenticationScheme,
-            tokenName: OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken);
+        //With OpenIddict
+        // var token = await HttpContextAccessor.HttpContext.GetTokenAsync(
+        //     scheme: CookieAuthenticationDefaults.AuthenticationScheme,
+        //     tokenName: OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken);
         
-        //var token = await HttpContextAccessor.HttpContext.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme,"access_token");
+        //With OpenIdConnect
+        var token = await HttpContextAccessor.HttpContext.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme,"access_token");
+        
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         _forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("https://localhost:7136/weatherforecast");
     }
