@@ -1,4 +1,5 @@
 using OpenIddict.Validation.AspNetCore;
+using OpenIddit.Api1.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ApiReader", policy =>
     {
         policy.RequireAuthenticatedUser();
-        //policy.RequireClaim("scope", "api.read");
+        policy.RequireScope("api.read");
     });
 });
 
