@@ -12,9 +12,14 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddAuthentication(opt =>
+builder.Services.AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
+builder.Services.AddAuthorization(options =>
 {
-    opt.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+    options.AddPolicy("ApiReader", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        //policy.RequireClaim("scope", "api.read");
+    });
 });
 
 builder.Services.AddOpenIddict()
@@ -26,16 +31,6 @@ builder.Services.AddOpenIddict()
         opt.UseSystemNetHttp();
         opt.UseAspNetCore();
     });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ApiReader", policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim("scope", "api.read");
-    });
-});
-
 
 var app = builder.Build();
 

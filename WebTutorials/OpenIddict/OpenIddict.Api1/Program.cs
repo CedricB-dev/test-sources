@@ -18,10 +18,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 
-builder.Services.AddAuthentication(opt =>
+builder.Services.AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
+builder.Services.AddAuthorization(options =>
 {
-    opt.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+    options.AddPolicy("ApiReader", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        //policy.RequireClaim("scope", "api.read");
+    });
 });
+
 
 builder.Services.AddOpenIddict()
     .AddValidation(opt =>
@@ -33,22 +39,6 @@ builder.Services.AddOpenIddict()
         opt.UseAspNetCore();
     });
 
-//.AddCookie
-// .AddOpenIdConnect(opt =>
-// {
-//     opt.Authority = "https://localhost:7279";
-//     opt.RequireHttpsMetadata = false;
-//     opt.Resource = "ap1";
-// });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ApiReader", policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim("scope", "api.read");
-    });
-});
 
 var app = builder.Build();
 
