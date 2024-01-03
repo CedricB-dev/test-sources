@@ -164,6 +164,38 @@ public class SeedData
             await applicationManager.CreateAsync(descriptor);
         }
         
+        if (await applicationManager.FindByClientIdAsync("react-app") is null)
+        {
+            var descriptor = new OpenIddictApplicationDescriptor
+            {
+                ClientId = "react-app",
+                ClientSecret = "react-app-secret",
+                ConsentType = OpenIddictConstants.ConsentTypes.Implicit,
+                ClientType = OpenIddictConstants.ClientTypes.Confidential,
+                RedirectUris = { new Uri("http://localhost:5173/signin-oidc") },
+                PostLogoutRedirectUris = { new Uri("http://localhost:5173/signout-oidc") },
+                Permissions =
+                {
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
+                    OpenIddictConstants.Permissions.Endpoints.Logout,
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.Introspection,
+                    OpenIddictConstants.Permissions.Endpoints.Revocation,
+                    
+                    OpenIddictConstants.Permissions.ResponseTypes.Code,
+                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                    OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                    
+                    OpenIddictConstants.Permissions.Scopes.Profile,
+                    OpenIddictConstants.Permissions.Scopes.Roles,
+                    
+                    OpenIddictConstants.Permissions.Prefixes.Scope + "api.read"
+                }
+            };
+
+            await applicationManager.CreateAsync(descriptor);
+        }
+        
         if (await applicationManager.FindByClientIdAsync("insomnia") is null)
         {
             var descriptor = new OpenIddictApplicationDescriptor
