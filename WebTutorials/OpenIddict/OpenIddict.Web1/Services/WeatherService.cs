@@ -1,6 +1,3 @@
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace OpenIddict.Web1.Services;
 
@@ -16,7 +13,6 @@ public class WeatherService
 
     public async Task<WeatherForecast[]> GetForecastAsync()
     {
-
         var client = _httpClientFactory.CreateClient("weather");
         var response = await client.GetFromJsonAsync<WeatherForecast[]>("weatherforecast");
         return response;
