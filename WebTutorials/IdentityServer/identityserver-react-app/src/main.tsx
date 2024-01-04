@@ -4,10 +4,10 @@ import App from './App.tsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import {AuthProvider} from "react-oidc-context";
-import {OidcClientSettings} from "oidc-client-ts";
+import {UserManagerSettings} from "oidc-client-ts";
 import {BrowserRouter} from "react-router-dom";
 
-const oidcConfig : OidcClientSettings = {
+const oidcConfig : UserManagerSettings = {
     authority: 'https://localhost:5110',
     client_id: 'react-app',
     client_secret: 'react-app-secret',
@@ -16,6 +16,7 @@ const oidcConfig : OidcClientSettings = {
     scope: 'openid profile roles api.read offline_access',
     post_logout_redirect_uri: 'http://localhost:5173/signout-oidc',
     loadUserInfo : false,
+    automaticSilentRenew: true,
 };
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
