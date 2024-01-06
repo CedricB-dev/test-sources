@@ -1,4 +1,7 @@
-using IdentityServer4.AccessTokenValidation;
+// using IdentityServer4.AccessTokenValidation;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +22,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 
-builder.Services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-    .AddIdentityServerAuthentication(options =>
+// builder.Services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+//     .AddIdentityServerAuthentication(options =>
+//     {
+//         options.Authority = "https://localhost:5110";
+//         options.RequireHttpsMetadata = false;
+//         options.ApiName = "api1";
+//     });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
     {
-        options.Authority = "https://localhost:5110";
-        options.RequireHttpsMetadata = false;
-        options.ApiName = "api1";
+        opt.Authority = "https://localhost:5110";
+        opt.RequireHttpsMetadata = false;
+        opt.Audience = "api1";
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ClockSkew = TimeSpan.Zero
+        };
     });
 
 builder.Services.AddAuthorization(options =>

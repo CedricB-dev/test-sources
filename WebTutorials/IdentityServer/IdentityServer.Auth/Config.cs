@@ -72,9 +72,9 @@ namespace IdentityServer.Auth
                     
                     AllowedGrantTypes = GrantTypes.Code,
                 
-                    RedirectUris = { "https://localhost:44300/signin-oidc" },
+                    RedirectUris = { "https://localhost:7193/signin-oidc" },
                     //FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
+                    PostLogoutRedirectUris = { "https://localhost::7193/signout-callback-oidc" },
                     AllowOfflineAccess = true,
                     AllowPlainTextPkce = true,
                     AllowedScopes =

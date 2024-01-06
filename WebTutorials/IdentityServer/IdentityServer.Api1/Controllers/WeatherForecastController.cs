@@ -1,4 +1,6 @@
-using IdentityModel.Client;
+// using IdentityModel.Client;
+
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +30,8 @@ public class WeatherForecastController : ControllerBase
     {
         var token = await _httpContextAccessor.HttpContext!.GetTokenAsync("access_token");
         _logger.LogInformation("{Method} token : {Token}", nameof(Get), token);
-        _httpClient.SetBearerToken(token);
+        // _httpClient.SetBearerToken(token);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var weatherForecasts = await _httpClient.GetFromJsonAsync<WeatherForecast[]>("https://localhost:7154/weatherforecast");
         return weatherForecasts!;
     }
