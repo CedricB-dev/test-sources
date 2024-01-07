@@ -14,32 +14,25 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 builder.Services.AddCascadingAuthenticationState();
-
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddScoped<TokenProvider>();
 
-//builder.Services.AddAccessTokenManagement();
 builder.Services.AddTransient<HttpContextUserBearerTokenHandler>();
 builder.Services.AddTransient<WeatherService>();
+
 builder.Services.AddHttpClient("weather", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7136/");
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-})//.AddUserAccessTokenHandler();
-.AddHttpMessageHandler<HttpContextUserBearerTokenHandler>();
+}).AddHttpMessageHandler<HttpContextUserBearerTokenHandler>();
 
 builder.Services.AddHttpClient("identity", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7279/");
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 });
-
-JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 //With OpenIdConnect
 builder.Services.AddAuthentication(o =>
@@ -61,7 +54,6 @@ builder.Services.AddAuthentication(o =>
     o.Scope.Add("api.read");
     o.Scope.Add(Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectScope.OfflineAccess);
     o.ClaimActions.MapJsonKey("role", "role");
-    //o.ClaimActions.MapJsonKey("sub", ClaimTypes.NameIdentifier);
     o.GetClaimsFromUserInfoEndpoint = true;
     o.SaveTokens = true;
 });

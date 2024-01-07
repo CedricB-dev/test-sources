@@ -9,7 +9,6 @@ public class HttpContextUserBearerTokenHandler : DelegatingHandler
 {
     private readonly IHttpContextAccessor _httpContextAccessorAccessor;
 
-
     public HttpContextUserBearerTokenHandler(
         IHttpContextAccessor httpContextAccessor
         )
