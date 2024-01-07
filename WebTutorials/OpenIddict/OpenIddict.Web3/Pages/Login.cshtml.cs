@@ -7,23 +7,23 @@ namespace OpenIddict.Web3.Pages;
 
 public class Login : PageModel
 {
-    public IActionResult OnGet(string redirectUri)
+    public IActionResult OnGet(string returnUrl)
     {
-        if (string.IsNullOrWhiteSpace(redirectUri))
+        if (string.IsNullOrWhiteSpace(returnUrl))
         {
-            redirectUri = Url.Content("~/");
+            returnUrl = Url.Content("~/");
         }
 
         // If user is already logged in, we can redirect directly...
         if (HttpContext.User.Identity.IsAuthenticated)
         {
-            Response.Redirect(redirectUri);
+            Response.Redirect(returnUrl);
         }
 
         return Challenge(
             new AuthenticationProperties
             {
-                RedirectUri = redirectUri
+                RedirectUri = returnUrl
             }, OpenIddictClientAspNetCoreDefaults.AuthenticationScheme);
     }
 }

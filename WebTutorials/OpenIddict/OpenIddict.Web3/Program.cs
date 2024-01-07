@@ -70,7 +70,7 @@ builder.Services.AddOpenIddict()
             //ResponseTypes = { ResponseTypes.Code },
             //GrantTypes = { GrantTypes.AuthorizationCode },
             RedirectUri = new Uri("https://localhost:7298/callback/login"),
-            PostLogoutRedirectUri = new Uri("https://localhost:7298/callback/logout")
+            PostLogoutRedirectUri = new Uri("https://localhost:7298/callback/logout"),
         });
     });
 
