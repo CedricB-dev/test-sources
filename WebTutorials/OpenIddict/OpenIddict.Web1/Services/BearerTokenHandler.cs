@@ -37,9 +37,7 @@ public class HttpContextUserBearerTokenHandler : DelegatingHandler
             _httpContextAccessorAccessor.HttpContext.Response.Redirect(
                 $"/refresh-token?redirectUri={requestPath}");
         }
-            
-        
-        
+
         request.SetBearerToken(token);
         return await base.SendAsync(request, cancellationToken);
     }

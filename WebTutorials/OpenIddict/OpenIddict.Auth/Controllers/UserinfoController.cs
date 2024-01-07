@@ -36,10 +36,11 @@ public class UserinfoController : Controller
         var claims = new Dictionary<string, object>(StringComparer.Ordinal)
         {
             // Note: the "sub" claim is a mandatory claim and must be included in the JSON response.
-            [OpenIddictConstants.Claims.Subject] = await _userManager.GetUserIdAsync(user)
+            [OpenIddictConstants.Claims.Subject] = await _userManager.GetUserIdAsync(user),
+            [OpenIddictConstants.Claims.Name] = await _userManager.GetUserNameAsync(user)
         };
 
-        if (User.HasScope(OpenIddictConstants.Permissions.Scopes.Email))
+        if (User.HasScope(OpenIddictConstants.Permissions.Scopes.Profile))
         {
             claims[OpenIddictConstants.Claims.Email] = await _userManager.GetEmailAsync(user);
             claims[OpenIddictConstants.Claims.EmailVerified] = await _userManager.IsEmailConfirmedAsync(user);

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IdentityModel.AspNetCore.AccessTokenManagement;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.Net.Http.Headers;
 using OpenIddict.Client;
 using OpenIddict.Client.AspNetCore;
@@ -17,10 +18,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddCascadingAuthenticationState();
+
 builder.Services.AddHttpContextAccessor();
 //builder.Services.AddScoped<TokenProvider>();
 
-builder.Services.AddAccessTokenManagement();
+//builder.Services.AddAccessTokenManagement();
 builder.Services.AddTransient<HttpContextUserBearerTokenHandler>();
 builder.Services.AddTransient<WeatherService>();
 builder.Services.AddHttpClient("weather", client =>
@@ -35,6 +38,8 @@ builder.Services.AddHttpClient("identity", client =>
     client.BaseAddress = new Uri("https://localhost:7279/");
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 });
+
+JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 //With OpenIdConnect
 builder.Services.AddAuthentication(o =>
