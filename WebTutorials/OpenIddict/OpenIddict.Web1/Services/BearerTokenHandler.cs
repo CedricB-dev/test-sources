@@ -18,17 +18,13 @@ public class HttpContextUserBearerTokenHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        //With OpenIddict
-        // var token = await _httpContextAccessorAccessor.HttpContext.GetTokenAsync(
-        //     scheme: CookieAuthenticationDefaults.AuthenticationScheme,
-        //     tokenName: OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken);
-        
-        //With OpenIdConnect
         var token = await _httpContextAccessorAccessor.HttpContext
-            .GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectParameterNames.AccessToken);
-        //
+            .GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                OpenIdConnectParameterNames.AccessToken);
+
         var expireAt = await _httpContextAccessorAccessor.HttpContext
-            .GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme,"expires_at");
+            .GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                "expires_at");
 
         if (DateTimeOffset.Parse(expireAt) < DateTimeOffset.UtcNow.AddSeconds(60))
         {

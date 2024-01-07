@@ -1,15 +1,7 @@
-using System.Security.Claims;
-using IdentityModel.AspNetCore.AccessTokenManagement;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.Net.Http.Headers;
-using OpenIddict.Client;
-using OpenIddict.Client.AspNetCore;
-using OpenIddict.Validation.AspNetCore;
-using OpenIddict.Web1;
 using OpenIddict.Web1.Components;
 using OpenIddict.Web1.Services;
-using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +26,6 @@ builder.Services.AddHttpClient("identity", client =>
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 });
 
-//With OpenIdConnect
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
@@ -58,52 +49,6 @@ builder.Services.AddAuthentication(o =>
     o.SaveTokens = true;
 });
 
-
-//With OpenIddict Client
-// builder.Services.AddAuthentication(o =>
-// {
-//     o.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
-// }).AddCookie(opt =>
-// {
-//     opt.LoginPath = "/login";
-//     // opt.LogoutPath = "/logout";
-//     // opt.ExpireTimeSpan = TimeSpan.FromMinutes(50);
-//     // opt.SlidingExpiration = false;
-// });
-//
-// builder.Services.AddAuthorization();
-//
-// builder.Services.AddOpenIddict()
-//     .AddClient(opt =>
-//     {
-//         opt.DisableTokenStorage();
-//         opt.AllowAuthorizationCodeFlow()
-//             .AllowRefreshTokenFlow();
-//         
-//         opt.AddDevelopmentEncryptionCertificate()
-//             .AddDevelopmentSigningCertificate();
-//
-//         // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-//         opt.UseAspNetCore()
-//             .EnableStatusCodePagesIntegration()
-//             .EnableRedirectionEndpointPassthrough()
-//             .EnablePostLogoutRedirectionEndpointPassthrough();
-//
-//         opt.UseSystemNetHttp();
-//             //.SetProductInformation(typeof(Startup).Assembly);
-//         
-//         opt.AddRegistration(new OpenIddictClientRegistration
-//         {
-//             Issuer = new Uri("https://localhost:7279"),
-//             ClientId = "web-read",
-//             //ClientSecret = "web-read-secret",
-//             Scopes = { Scopes.OpenId, Scopes.Profile, Scopes.Roles, "api.read" },
-//             //ResponseTypes = { ResponseTypes.Code },
-//             //GrantTypes = { GrantTypes.AuthorizationCode },
-//             RedirectUri = new Uri("https://localhost:7170/callback/login"),
-//             PostLogoutRedirectUri = new Uri("https://localhost:7170/signout-callback-oidc")
-//         });
-//     });
 
 var app = builder.Build();
 
