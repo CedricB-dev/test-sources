@@ -137,13 +137,15 @@ public class SeedData
                 ClientType = OpenIddictConstants.ClientTypes.Public,
                 RedirectUris = 
                 { 
-                    new Uri("https://localhost:7170/callback/login") ,
+                    new Uri("https://localhost:7298/callback/login") ,
                     new Uri("https://localhost:7170/signin-oidc"),
                     new Uri("https://localhost:7138/signin-oidc")
                 },
                 PostLogoutRedirectUris =
                 {
-                    new Uri("https://localhost:7170/signout-callback-oidc")
+                    new Uri("https://localhost:7298/callback/logout"),
+                    new Uri("https://localhost:7170/signout-callback-oidc"),
+                    new Uri("https://localhost:7138/signout-callback-oidc")
                 },
                 Permissions =
                 {
@@ -223,12 +225,6 @@ public class SeedData
                     
                     OpenIddictConstants.Permissions.Scopes.Profile,
                     OpenIddictConstants.Permissions.Scopes.Roles,
-                    
-                    
-                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OpenId,
-                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Profile,
-                    // OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Roles,
-                    //OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OfflineAccess,
                     OpenIddictConstants.Permissions.Prefixes.Scope + "api.read"
                 }
             };
