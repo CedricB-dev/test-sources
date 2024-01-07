@@ -135,8 +135,16 @@ public class SeedData
                 //ClientSecret = "web-read-secret",
                 ConsentType = OpenIddictConstants.ConsentTypes.Implicit,
                 ClientType = OpenIddictConstants.ClientTypes.Public,
-                RedirectUris = { new Uri("https://localhost:7170/callback/login") ,new Uri("https://localhost:7170/signin-oidc") },
-                PostLogoutRedirectUris = { new Uri("https://localhost:7170/signout-callback-oidc") },
+                RedirectUris = 
+                { 
+                    new Uri("https://localhost:7170/callback/login") ,
+                    new Uri("https://localhost:7170/signin-oidc"),
+                    new Uri("https://localhost:7138/signin-oidc")
+                },
+                PostLogoutRedirectUris =
+                {
+                    new Uri("https://localhost:7170/signout-callback-oidc")
+                },
                 Permissions =
                 {
                     OpenIddictConstants.Permissions.Endpoints.Authorization,
