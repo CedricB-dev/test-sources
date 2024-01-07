@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenIddict.Web1", "OpenIddi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenIddict.Web2", "OpenIddict.Web2\OpenIddict.Web2.csproj", "{BD3C44D0-8F24-4CE9-8019-C0F42DA563BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenIddict.Web3", "OpenIddict.Web3\OpenIddict.Web3.csproj", "{05EE115E-E90E-4335-A301-6F35EDF864DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{BD3C44D0-8F24-4CE9-8019-C0F42DA563BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD3C44D0-8F24-4CE9-8019-C0F42DA563BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD3C44D0-8F24-4CE9-8019-C0F42DA563BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05EE115E-E90E-4335-A301-6F35EDF864DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05EE115E-E90E-4335-A301-6F35EDF864DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05EE115E-E90E-4335-A301-6F35EDF864DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05EE115E-E90E-4335-A301-6F35EDF864DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
