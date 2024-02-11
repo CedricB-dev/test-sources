@@ -1,0 +1,45 @@
+﻿#Api1 Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: api1
+  namespace: kubernetesdemo
+  labels:
+    app: api1
+spec:
+  selector:
+    app: api1
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+---
+#Api1 Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api1
+  namespace: kubernetesdemo
+  labels:
+    app: api1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api1
+  template:
+    metadata:
+      name: api1
+      labels:
+        app: api1
+    spec:
+      containers:
+        - name: api1
+          image: kubernetesdemo.api1:dev
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+          ports: 
+            - containerPort: 80
