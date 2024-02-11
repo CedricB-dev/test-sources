@@ -11,19 +11,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddTransient<CookieEvents>();
-builder.Services.AddTransient<OidcEvents>();
+//builder.Services.AddTransient<CookieEvents>();
+//builder.Services.AddTransient<OidcEvents>();
 builder.Services.AddAccessTokenManagement();
-builder.Services.AddSingleton<IUserAccessTokenStore, ServerSideTokenStore>();
+//builder.Services.AddSingleton<IUserAccessTokenStore, ServerSideTokenStore>();
 
 // builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddTransient<WeatherService>();
-builder.Services.AddHttpClient("weather", client =>
+builder.Services.AddUserAccessTokenHttpClient("weather", configureClient: client =>
 {
     client.BaseAddress = new Uri("https://localhost:7136/");
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-});
+});//.AddHttpMessageHandler<UserAccessTokenHandler>();
 
 builder.Services.AddAuthentication(o =>
     {
@@ -31,7 +31,7 @@ builder.Services.AddAuthentication(o =>
         o.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme;
     }).AddCookie(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme, opt =>
     {
-        opt.EventsType = typeof(CookieEvents);
+        //opt.EventsType = typeof(CookieEvents);
     })
     .AddOpenIdConnect(Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme, o =>
     {
@@ -51,7 +51,7 @@ builder.Services.AddAuthentication(o =>
         o.GetClaimsFromUserInfoEndpoint = true;
         o.SaveTokens = true;
         
-        o.EventsType = typeof(OidcEvents);
+        //o.EventsType = typeof(OidcEvents);
     });
 
 var app = builder.Build();

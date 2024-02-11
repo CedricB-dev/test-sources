@@ -11,11 +11,5 @@
         <PackageReference Include="OpenIddict.Client.AspNetCore" Version="5.0.1" />
         <PackageReference Include="OpenIddict.Client.SystemNetHttp" Version="5.0.1" />
     </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Pages\Login.cshtml" />
-      <AdditionalFiles Include="Pages\LoginCallback.cshtml" />
-      <AdditionalFiles Include="Pages\RefreshToken.cshtml" />
-    </ItemGroup>
     
 </Project>

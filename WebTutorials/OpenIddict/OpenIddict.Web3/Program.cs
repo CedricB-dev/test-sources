@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Net.Http.Headers;
 using OpenIddict.Abstractions;
 using OpenIddict.Client;
+using OpenIddict.Client.AspNetCore;
 using OpenIddict.Web3.Components;
 using OpenIddict.Web3.Services;
 
@@ -29,6 +33,41 @@ builder.Services.AddAuthentication(o =>
 }).AddCookie(opt =>
 {
     opt.LoginPath = "/login";
+    opt.Events = new CookieAuthenticationEvents
+    {
+        OnValidatePrincipal = async context =>
+        {
+            var expireAt = context.Properties.GetTokenValue(OpenIddictClientAspNetCoreConstants.Tokens
+                .BackchannelAccessTokenExpirationDate);
+
+            var accessTokenExpiration = DateTimeOffset.Parse(expireAt);
+            var timeRemaining = accessTokenExpiration.Subtract(DateTimeOffset.UtcNow);
+            var refreshThreshold = TimeSpan.FromSeconds(60);
+            if (timeRemaining < refreshThreshold)
+            {
+                var refreshToken = context.Properties.GetTokenValue(
+                    OpenIddictClientAspNetCoreConstants.Tokens.RefreshToken);
+                var openIddictClientService = context.HttpContext.RequestServices
+                    .GetRequiredService<OpenIddictClientService>();
+                var result = await openIddictClientService.AuthenticateWithRefreshTokenAsync(
+                    new OpenIddictClientModels.RefreshTokenAuthenticationRequest
+                    {
+                        RefreshToken = refreshToken
+                    });
+
+                context.Properties.UpdateTokenValue(
+                    OpenIddictClientAspNetCoreConstants.Tokens
+                    .BackchannelAccessTokenExpirationDate, result.AccessTokenExpirationDate.ToString());
+                context.Properties.UpdateTokenValue(
+                    OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken,
+                    result.AccessToken);
+                context.Properties.UpdateTokenValue(
+                    OpenIddictClientAspNetCoreConstants.Tokens.RefreshToken,
+                    result.RefreshToken);
+                context.ShouldRenew = true;
+            }
+        }
+    };
     // opt.LogoutPath = "/logout";
     // opt.ExpireTimeSpan = TimeSpan.FromMinutes(50);
     // opt.SlidingExpiration = false;
@@ -42,7 +81,7 @@ builder.Services.AddOpenIddict()
         opt.DisableTokenStorage();
         opt.AllowAuthorizationCodeFlow()
             .AllowRefreshTokenFlow();
-        
+
         opt.AddDevelopmentEncryptionCertificate()
             .AddDevelopmentSigningCertificate();
 
@@ -53,19 +92,20 @@ builder.Services.AddOpenIddict()
             .EnablePostLogoutRedirectionEndpointPassthrough();
 
         opt.UseSystemNetHttp();
-            //.SetProductInformation(typeof(Startup).Assembly);
-        
+        //.SetProductInformation(typeof(Startup).Assembly);
+
         opt.AddRegistration(new OpenIddictClientRegistration
         {
             Issuer = new Uri("https://localhost:7279"),
             ClientId = "web-read",
             //ClientSecret = "web-read-secret",
-            Scopes = 
-            { 
+            Scopes =
+            {
                 OpenIddictConstants.Scopes.OpenId,
                 OpenIddictConstants.Scopes.Profile,
                 OpenIddictConstants.Scopes.Roles,
-                "api.read" 
+                OpenIddictConstants.Scopes.OfflineAccess,
+                "api.read"
             },
             //ResponseTypes = { ResponseTypes.Code },
             //GrantTypes = { GrantTypes.AuthorizationCode },

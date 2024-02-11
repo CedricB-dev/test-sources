@@ -5,6 +5,8 @@ using OpenIddict.Web1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddMemoryCache();
 builder.Services.AddRazorPages();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
