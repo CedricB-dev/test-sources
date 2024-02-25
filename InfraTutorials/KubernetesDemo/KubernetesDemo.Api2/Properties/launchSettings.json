@@ -1,6 +1,6 @@
-{
+﻿{
   "profiles": {
-    "Ap1.API": {
+    "Ap2.API": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -8,7 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5014;https://localhost:7036"
+      "applicationUrl": "http://localhost:5170;https://localhost:7103"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -35,8 +35,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5014",
-      "sslPort": 7036
+      "applicationUrl": "http://localhost:5170",
+      "sslPort": 7103
     }
   }
 }

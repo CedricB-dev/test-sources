@@ -1,15 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubernetesDemo.Api1", "KubernetesDemo.Api1\KubernetesDemo.Api1.csproj", "{2D000963-8781-4751-B472-764467AD3C1D}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubernetesDemo.Api1", "KubernetesDemo.Api1\KubernetesDemo.Api1.csproj", "{2D000963-8781-4751-B472-764467AD3C1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "local-k8s", "local-k8s", "{99CB275E-7AF4-4B92-AFDB-FFD15274C58E}"
 	ProjectSection(SolutionItems) = preProject
+		local-k8s\Api1.yaml = local-k8s\Api1.yaml
 		local-k8s\cluster-role-binding.yml = local-k8s\cluster-role-binding.yml
 		local-k8s\service-account.yaml = local-k8s\service-account.yaml
-		local-k8s\Api1.yaml = local-k8s\Api1.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KubernetesDemo", "KubernetesDemo", "{AB42F6A2-3C17-4AE6-A62C-569A798CE3A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubernetesDemo.Api2", "KubernetesDemo.Api2\KubernetesDemo.Api2.csproj", "{AF2F84E2-DE40-4FB1-A691-BAC84A61A158}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{6E639BC4-A957-4CFD-9798-1CC71D15CCFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +28,22 @@ Global
 		{2D000963-8781-4751-B472-764467AD3C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D000963-8781-4751-B472-764467AD3C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D000963-8781-4751-B472-764467AD3C1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF2F84E2-DE40-4FB1-A691-BAC84A61A158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF2F84E2-DE40-4FB1-A691-BAC84A61A158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF2F84E2-DE40-4FB1-A691-BAC84A61A158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF2F84E2-DE40-4FB1-A691-BAC84A61A158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E639BC4-A957-4CFD-9798-1CC71D15CCFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E639BC4-A957-4CFD-9798-1CC71D15CCFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E639BC4-A957-4CFD-9798-1CC71D15CCFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E639BC4-A957-4CFD-9798-1CC71D15CCFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AB42F6A2-3C17-4AE6-A62C-569A798CE3A8} = {99CB275E-7AF4-4B92-AFDB-FFD15274C58E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F83CB55D-76FA-4346-8E49-F0E5F8C0D01A}
 	EndGlobalSection
 EndGlobal

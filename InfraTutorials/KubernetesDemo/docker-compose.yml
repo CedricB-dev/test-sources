@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  kubernetesdemo.api1:
+    image: ${DOCKER_REGISTRY-}kubernetesdemoapi1:${TAG:-dev}
+    build:
+      context: .
+      dockerfile: KubernetesDemo.Api1/Dockerfile
+  kubernetesdemo.api2:
+    image: ${DOCKER_REGISTRY-}kubernetesdemoapi2:${TAG:-dev}
+    build:
+      context: .
+      dockerfile: KubernetesDemo.Api2/Dockerfile
