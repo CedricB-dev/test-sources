@@ -1,0 +1,47 @@
+﻿@page "/podcasts"
+@inject HttpClient Http
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (podcasts == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var podcast in podcasts)
+        {
+            <tr>
+                <td>@podcast.Id</td>
+                <td>@podcast.Title</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Podcast[]? podcasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        podcasts = await Http.GetFromJsonAsync<Podcast[]>("/podcasts");
+    }
+
+    public record Podcast(int Id, string Title);
+
+}
