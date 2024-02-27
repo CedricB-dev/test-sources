@@ -1,0 +1,59 @@
+﻿@page "/openai"
+@rendermode InteractiveServer
+@using OpenAI_API
+@using OpenAI_API.Chat
+@using OpenAI_API.Completions
+<h3>OpenAi</h3>
+
+<div>
+    <label for="prompt">Enter a prompt:</label>
+    <input type="text" id="prompt" @bind="_promptText" />
+    <button @onclick="GenerateText">Generate Text</button>
+</div>
+
+<div>
+    <label for="result">Generated Text:</label>
+    <pre>
+        <code>@_generatedText</code>
+    </pre>
+</div>
+
+@code {
+    private OpenAIAPI _client;
+    private string _promptText;
+    private string _generatedText;
+
+    [Inject]
+    public IConfiguration Configuration { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        _client = new OpenAIAPI(Configuration.GetValue<string>("OpenAi:ApiKey"));
+    }
+    
+    private async Task GenerateText()
+    {
+        var chatRequest = new ChatRequest
+        {
+            Model = OpenAI_API.Models.Model.ChatGPTTurbo,
+            Messages = new List<ChatMessage>
+            {
+                new()
+                {
+                    Role = ChatMessageRole.System,
+                    TextContent = "You are a helpful assistant."
+                },
+                new()
+                {
+                    Role = ChatMessageRole.User,
+                    TextContent = _promptText
+                }
+            }
+        };
+        
+
+        var response = await _client.Chat.CreateChatCompletionAsync(chatRequest);
+
+        _generatedText = response.ToString();
+    }
+}
