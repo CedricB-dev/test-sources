@@ -1,0 +1,23 @@
+syntax="proto3";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+//import "CustomTypes/date.proto";
+
+option csharp_namespace = "TestGrpc.Grpc";
+
+service WeatherForecastService {
+  rpc GetWeatherForecast (google.protobuf.Empty) returns (WeatherForecastResponse);
+}
+
+message WeatherForecastResponse {
+  repeated WeatherForecast forecasts = 1;
+}
+
+message WeatherForecast {
+  google.protobuf.Timestamp date = 1;
+  //CustomTypes.Date date = 1;
+  int32 temperatureC = 2;
+  int32 temperatureF = 3;
+  google.protobuf.StringValue summary = 4;
+}

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.61.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="..\weatherforecastservice.proto" GrpcServices="Server">
+            <Link>Protos\weatherforecastservice.proto</Link>
+        </Protobuf>
+<!--        <Protobuf Include="..\CustomTypes\date.proto" GrpcServices="Server">-->
+<!--            <Link>Protos\date.proto</Link>-->
+<!--        </Protobuf>-->
+    </ItemGroup>
+</Project>
